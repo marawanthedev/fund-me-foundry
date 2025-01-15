@@ -2,8 +2,8 @@
 pragma solidity ^0.8.18;
 
 import {Test} from "forge-std/Test.sol";
-import {FundMe} from "../src/FundMe.sol";
-import {DeployFundMe} from "../script/FundMe.s.sol";
+import {FundMe} from "../../src/FundMe.sol";
+import {DeployFundMe} from "../../script/FundMe.s.sol";
 
 contract FundMeTest is Test {
     FundMe fundMe;
@@ -50,7 +50,7 @@ contract FundMeTest is Test {
         fundMe.withdraw();
     }
 
-    function testWithDrawSuccedsWithOwner() public funded {
+    function testWithDrawSuccessWithOwner() public funded {
         // arrange
         uint256 ownerStartingBalance = fundMe.getOwner().balance;
         uint256 contractStartingBalance = address(fundMe).balance;
@@ -121,7 +121,7 @@ contract FundMeTest is Test {
 
         uint256 balanceAfterFallback = address(fundMe).balance;
 
-        assertEq(balanceAfterFallback, (SEND_VALUE * 2));
+        assertEq(balanceAfterFallback, initialBalance + (SEND_VALUE * 2));
     }
 
     function testAddressToAmountValueIsCorrect() public funded {
