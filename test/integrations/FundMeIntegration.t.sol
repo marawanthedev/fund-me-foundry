@@ -22,7 +22,6 @@ contract FundMeTestIntegration is Test {
     function testUserCanFund() public {
         uint256 ownerStartingBalance = fundMe.getOwner().balance;
 
-        FundMeFund fundMeFund = new FundMeFund();
         vm.prank(USER);
         fundMe.fund{value: SEND_VALUE}();
 
