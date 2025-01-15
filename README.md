@@ -185,3 +185,55 @@ The project has the following directory structure:
     ├── integrations
     ├── mocks
     └── unit
+
+### Explanation of the Folder Structure:
+
+- **Makefile**: Defines automation commands (e.g., deploy, test, etc.).
+- **README.md**: Project documentation.
+- **broadcast/**: Contains script files related to broadcasting, such as deployment scripts.
+- **cache/**: Stores temporary files for caching during deployments and tests.
+- **foundry.toml**: Configuration file for Foundry.
+- **lib/**: Contains external libraries or dependencies (e.g., Chainlink, Forge, Foundry DevOps).
+- **out/**: Output directory for compiled contracts and other generated artifacts.
+- **script/**: Contains Solidity deployment and interaction scripts.
+- **src/**: Source code for the project, including core contracts like `FundMe.sol` and `PriceConverter.sol`.
+- **test/**: Contains unit tests, mocks, and integration tests.
+
+
+
+### `HelperConfig` Contract Overview
+
+The `HelperConfig` contract is a utility that simplifies the deployment process of the `FundMe` contract across different blockchain networks (Sepolia, Mainnet, and local chains). It ensures that the appropriate price feed is used based on the network where the contract is deployed. Here are the key highlights:
+
+### Key Features:
+
+1. **Dynamic Network Configuration:**
+   - The contract automatically detects the current network (Sepolia, Mainnet, or a local chain like Anvil) using the `block.chainid`.
+   - Depending on the active network, it sets the corresponding price feed address to be used by the `FundMe` contract.
+   - For Sepolia and Mainnet, it uses hardcoded, real price feed addresses.
+
+2. **Local Mock Price Feed (Anvil) Support:**
+   - If running on a local blockchain (e.g., Anvil), the contract will check if a price feed mock has already been deployed.
+   - If not, it will deploy a new mock price feed contract (`MockV3Aggregator`) to simulate a real-world price feed in local testing environments.
+   - This ensures that local development is not dependent on external data sources but can still interact with a mock price feed that mimics real-world conditions.
+
+3. **Network-Specific Price Feeds:**
+   - The contract contains logic to handle different price feed addresses for different networks:
+     - **Sepolia Testnet:** Uses the price feed address `0x694AA1769357215DE4FAC081bf1f309aDC325306`.
+     - **Mainnet:** Uses the price feed address `0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419`.
+     - **Local (Anvil):** Deploys a mock price feed using `MockV3Aggregator` if not already deployed.
+     - you may refer to Chainlink's price feed documentation for further information
+
+4. **Simplified Configuration Management:**
+   - The contract allows developers to easily fetch the correct network configuration using the `getActiveNetworkConfig()` function.
+   - This function returns the relevant price feed address for the active network, streamlining interactions with the `FundMe` contract without worrying about which network the contract is running on.
+
+5. **Facilitates Multi-Network Deployment:**
+   - By abstracting the network-specific details (like the price feed address), the contract simplifies the deployment and testing process across various environments (local, testnet, and mainnet).
+   - Developers can use the same `FundMe` contract code and interact with the price feed without needing to manually change the price feed address depending on the network.
+
+### Benefits:
+
+- **Consistency Across Networks:** The `HelperConfig` contract ensures that the `FundMe` contract interacts with the correct price feed, whether on Sepolia, Mainnet, or a local blockchain.
+- **Easy Mock Deployment:** Automatically deploys a mock price feed for local development, making it easier to test without needing external data sources or services.
+- **Streamlined Development:** Developers can focus on building the contract logic without needing to handle the intricacies of different network configurations or manually managing contract deployments for each network.
